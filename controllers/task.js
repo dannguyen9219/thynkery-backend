@@ -20,7 +20,7 @@ router.get('/table', (req, res) => {
     Task.find({}, (err, foundTasks) => {
         if (!err) {
             const formattedData = foundTasks.reduce((acc, item) => {
-                acc[item.status] = acc[item.status] ? [...acc[item.status], item] : [item]
+                acc[item.priority] = acc[item.priority] ? [...acc[item.priority], item] : [item]
                 return acc
             }, {})
             res.status(200).json(formattedData)
