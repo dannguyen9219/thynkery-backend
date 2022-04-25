@@ -14,13 +14,47 @@ router.get('/', (req, res) => {
     });
 });
 
+// New Route //
+router.get('/new', (req, res) => {
+    res.render('tasks/New')
+});
 
-// Table Route //
+// Table Route - List Page //
 router.get('/table', (req, res) => {
     Task.find({}, (err, foundTasks) => {
         if (!err) {
             const formattedData = foundTasks.reduce((acc, item) => {
                 acc[item.priority] = acc[item.priority] ? [...acc[item.priority], item] : [item]
+                return acc
+            }, {})
+            res.status(200).json(formattedData)
+        }   else {
+            res.status(400).json(err)
+        };
+    });
+});
+
+// Table Route - Trello Page //
+router.get('/trello', (req, res) => {
+    Task.find({}, (err, foundTasks) => {
+        if (!err) {
+            const formattedData = foundTasks.reduce((acc, item) => {
+                acc[item.status] = acc[item.status] ? [...acc[item.status], item] : [item]
+                return acc
+            }, {})
+            res.status(200).json(formattedData)
+        }   else {
+            res.status(400).json(err)
+        };
+    });
+});
+
+// Table Route - Calendar Page //
+router.get('/calendar', (req, res) => {
+    Task.find({}, (err, foundTasks) => {
+        if (!err) {
+            const formattedData = foundTasks.reduce((acc, item) => {
+                acc[item.status] = acc[item.status] ? [...acc[item.status], item] : [item]
                 return acc
             }, {})
             res.status(200).json(formattedData)
@@ -41,6 +75,19 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+// Update Route //
+router.put('/:id', (req, res) => {
+    const { body } = req
+
+    Task.findByIdAndUpdate(req.params.id, body, 
+        {new: true}, (err, updatedTask) => {
+            if (!err) {
+                res.status(200).json(updatedTask)
+            }   else {
+                res.status(400).json(err)
+            };
+        });
+});
 
 // Create Route //
 router.post('/', (req, res) => {
@@ -55,20 +102,29 @@ router.post('/', (req, res) => {
     });
 });
 
+// Create Route //
+// router.post('/', (req, res) => {
+//     req.body.username = req.session.username;
+//     Bug.create(req.body)
+//         .then((createdBug) => {
+//             res.redirect(`/bugs/${createdBug._id}`)
+//         })
+//         .catch((error) => {
+//             res.status(400).json({ error })
+//         })
+// });
 
-// Update Route //
-router.put('/:id', (req, res) => {
-    const { body } = req
-
-    Task.findByIdAndUpdate(req.params.id, body, 
-        {new: true}, (err, updatedTask) => {
-            if (!err) {
-                res.status(200).json(updatedTask)
-            }   else {
-                res.status(400).json(err)
-            };
-        });
-});
+// Edit Route //
+// router.get('/:id/edit', (req, res) => {
+//     const { id } = req.params
+//     Bug.findById(id)
+//         .then((bug) => {
+//             res.render('bugs/Edit', { bug })
+//         })
+//         .catch((error) => {
+//             res.status(400).json({ error })
+//         })
+// });
 
 
 // Show Route //
