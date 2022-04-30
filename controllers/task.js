@@ -65,7 +65,7 @@ router.get('/calendar', (req, res) => {
 });
 
 // Delete Route //
-router.delete('/:id', (req, res) => {
+router.delete('/task/:id', (req, res) => {
     Task.findByIdAndDelete(req.params.id, (err) => {
         if (!err) {
             res.status(200).json({message: "Deleted the task!"})
@@ -75,8 +75,22 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-// Update Route //
+// Update Trello Route //
 router.put('/:id', (req, res) => {
+    const { body } = req
+
+    Task.findByIdAndUpdate(req.params.id, body, 
+        {new: true}, (err, updatedTask) => {
+            if (!err) {
+                res.status(200).json(updatedTask)
+            }   else {
+                res.status(400).json(err)
+            };
+        });
+});
+
+// Update Task Route //
+router.put('/edit/task/:id', (req, res) => {
     const { body } = req
 
     Task.findByIdAndUpdate(req.params.id, body, 
@@ -128,10 +142,11 @@ router.post('/', (req, res) => {
 
 
 // Show Route //
-router.get('/:id', (req, res) => {
+router.get('/task/:id', (req, res) => {
     Task.findById(req.params.id, (err, foundTask) => {
         if (!err) {
             res.status(200).json(foundTask)
+            // return foundTask
         }   else {
             res.status(400).json(err)
         };

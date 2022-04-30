@@ -9,7 +9,7 @@ const taskController = require('./controllers/task');
 // Middleware //
 app.use(cors());
 app.use(express.json());
-app.use('/tasks', taskController);
+app.use('/tasks', taskController); // When you have /tasks, check the frontend if some of your routes are not working. Try /tasks/task
 
 
 // Listening Route //
